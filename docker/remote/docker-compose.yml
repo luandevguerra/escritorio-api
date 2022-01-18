@@ -1,0 +1,38 @@
+version: '3'
+services:
+  api:
+    container_name: api
+    image: shockyng/the-bible-project-api
+    ports:
+      - '8085:8080'
+    depends_on:
+      - the-bible-project-db
+  the-bible-project-db:
+    container_name: the-bible-project-db
+    image: postgres:9.6
+    ports:
+      - '5433:5432'
+    restart: always
+    environment:
+      - POSTGRES_DB=thebibleprojectdb
+      - POSTGRES_PASSWORD=123456789
+  nginx:
+    container_name: nginx
+    image: nginx
+    ports:
+      - '80:80'
+    depends_on:
+      - api
+    volumes:
+      - ./local-data/the-bible-project.conf:/etc/nginx/conf.d/the-bible-project.conf
+  # Once PgAdmin will be installed on the docker environment, don't forget
+  # to mention the internal port, ans the host as the name of the container
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: root
+    ports:
+      - "5050:80"
