@@ -11,7 +11,7 @@ import java.util.*
 
 
 @EnableWebSecurity
-class WebSecurityConfig: WebSecurityConfigurerAdapter() {
+class WebSecurityConfig : WebSecurityConfigurerAdapter() {
 
     override fun configure(http: HttpSecurity?) {
         http?.cors()
@@ -19,11 +19,13 @@ class WebSecurityConfig: WebSecurityConfigurerAdapter() {
 
     @Bean
     fun corsConfigurationSource(): CorsConfigurationSource? {
-        val configuration = CorsConfiguration()
-        configuration.allowedOrigins = listOf("*")
-        configuration.allowedMethods = listOf("GET", "POST", "OPTIONS")
-        val source = UrlBasedCorsConfigurationSource()
-        source.registerCorsConfiguration("/**", configuration)
-        return source
+        return UrlBasedCorsConfigurationSource().apply {
+            registerCorsConfiguration("/**",
+                    CorsConfiguration().apply {
+                        allowedOrigins = listOf("*")
+                        allowedMethods = listOf("GET", "POST", "PUT", "OPTIONS")
+                    }
+            )
+        }
     }
 }
